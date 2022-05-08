@@ -1,12 +1,12 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #008080;
-  color:#fff
+  color: #fff;
 }
 button {
   background-color: #f97171;
@@ -19,12 +19,20 @@ button {
 }
 
 .table {
-    display: flex;
-    margin: auto;
-    height: 100vh;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+  display: flex;
+  margin: auto;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+td,
+th {
+  padding: 5px 10px;
+}
+
+input {
+  border: none;
 }
 
 .m-l-10 {
@@ -35,9 +43,13 @@ button {
 }
 
 .display-flex {
-  display:flex
+  display: flex;
 }
 
 .flex-direction-column {
-  flex-direction:column;
+  flex-direction: column;
+}
+
+.align-center {
+  align-items: center;
 }
