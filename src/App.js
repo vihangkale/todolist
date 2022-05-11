@@ -18,6 +18,7 @@ function App() {
   async function addTask(e) {
     const tasks = JSON.parse(localStorage.getItem("Tasks")) || [];
     addFieldData.id = uuidv4();
+    addFieldData.taskDone = false;
     setTasks([...tasks, addFieldData]);
     localStorage.setItem("Tasks", JSON.stringify([...tasks, addFieldData]));
   }
@@ -57,6 +58,17 @@ function App() {
     localStorage.clear();
     getTaskData();
   }
+
+  function checkTaskDone(e, markDonetask) {
+    const tasks = JSON.parse(localStorage.getItem("Tasks")) || [];
+    tasks.map((task) => {
+      if (task.id === markDonetask.id) {
+        e.target.checked ? (task.taskDone = true) : (task.taskDone = false);
+      }
+    });
+    localStorage.setItem("Tasks", JSON.stringify(tasks));
+    getTaskData();
+  }
   return (
     <div className="table">
       <h1>{isEditTaskData ? "Update Task" : "Add Task"}</h1>
@@ -86,15 +98,16 @@ function App() {
         {isEditTaskData ? "Update Task" : "Add Task"}
       </button>
 
-      <div class="display-flex align-center">
-        <h1>Tasks</h1>
-        <button class="m-l-10" onClick={(e) => clearTaskData()}>
+      <div className="display-flex align-center">
+        <h1>Tasks yet to be completed</h1>
+        <button className="m-l-10" onClick={(e) => clearTaskData()}>
           Clear All Tasks
         </button>
       </div>
       <table>
         <thead>
           <tr>
+            <th>Mark Done</th>
             <th>Name</th>
             <th>Date</th>
             <th></th>
@@ -102,28 +115,85 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {Tasks.map((task) => (
-            <tr>
-              <td>{task.date}</td>
-              <td>{task.name}</td>
-              <td>
-                <button
-                  onClick={(e) => {
-                    isEditTaskData
-                      ? setEditTaskData(false)
-                      : editTaskData(task);
-                  }}
-                >
-                  {task.id === addFieldData.id && isEditTaskData
-                    ? "Stop Edit"
-                    : "Edit"}
-                </button>
-              </td>
-              <td>
-                <button onClick={(e) => DeleteTask(task)}>Delete</button>
-              </td>
-            </tr>
-          ))}
+          {Tasks.map(
+            (task) =>
+              !task.taskDone && (
+                <tr key={task.id}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      onChange={(e) => checkTaskDone(e, task)}
+                      checked={task.taskDone ? true : false}
+                    />
+                  </td>
+                  <td>{task.date}</td>
+                  <td>{task.name}</td>
+                  <td>
+                    <button
+                      onClick={(e) => {
+                        isEditTaskData
+                          ? setEditTaskData(false)
+                          : editTaskData(task);
+                      }}
+                    >
+                      {task.id === addFieldData.id && isEditTaskData
+                        ? "Stop Edit"
+                        : "Edit"}
+                    </button>
+                  </td>
+                  <td>
+                    <button onClick={(e) => DeleteTask(task)}>Delete</button>
+                  </td>
+                </tr>
+              )
+          )}
+        </tbody>
+      </table>
+
+      <h1>Tasks done</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Mark Done</th>
+            <th>Name</th>
+            <th>Date</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {Tasks.map(
+            (task) =>
+              task.taskDone && (
+                <tr key={task.id}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      onChange={(e) => checkTaskDone(e, task)}
+                      checked={task.taskDone ? true : false}
+                    />
+                  </td>
+                  <td>{task.date}</td>
+                  <td>{task.name}</td>
+                  <td>
+                    <button
+                      onClick={(e) => {
+                        isEditTaskData
+                          ? setEditTaskData(false)
+                          : editTaskData(task);
+                      }}
+                    >
+                      {task.id === addFieldData.id && isEditTaskData
+                        ? "Stop Edit"
+                        : "Edit"}
+                    </button>
+                  </td>
+                  <td>
+                    <button onClick={(e) => DeleteTask(task)}>Delete</button>
+                  </td>
+                </tr>
+              )
+          )}
         </tbody>
       </table>
     </div>
