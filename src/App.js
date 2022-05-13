@@ -20,11 +20,11 @@ function App() {
       console.log(addFieldData.name, addFieldData.date);
       if (!addFieldData.name) {
         let name = document.getElementById("name");
-        name.style.border = "1px solid red";
+        if (name) name.style.border = "1px solid red";
       }
       if (!addFieldData.date) {
         let date = document.getElementById("date");
-        date.style.border = "1px solid red";
+        if (date) date.style.border = "1px solid red";
       }
     } else {
       const tasks = JSON.parse(localStorage.getItem("Tasks")) || [];
@@ -38,17 +38,15 @@ function App() {
 
   function inputData(e) {
     e.preventDefault();
-    if (e.target.name === "name") {
-      let name = document.getElementById("name");
-      if (name) name.style.border = "none";
-    }
-    if (e.target.name === "date") {
-      let date = document.getElementById("date");
-      if (date) date.style.border = "none";
-    }
+    let input = document.getElementById(e.target.name);
+    if (input) input.style.border = "none";
     setAddFieldData({ ...addFieldData, [e.target.name]: e.target.value });
   }
   function editTaskData(task) {
+    let name = document.getElementById("name");
+    if (name) name.style.border = "none";
+    let date = document.getElementById("date");
+    if (date) date.style.border = "none";
     setEditTaskData(true);
     setAddFieldData(task);
   }
@@ -129,98 +127,99 @@ function App() {
           Clear All Tasks
         </button>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Mark Done</th>
-            <th>Name</th>
-            <th>Date</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {Tasks.map(
-            (task) =>
-              !task.taskDone && (
-                <tr key={task.id}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      onChange={(e) => checkTaskDone(e, task)}
-                      checked={task.taskDone ? true : false}
-                    />
-                  </td>
-                  <td>{task.date}</td>
-                  <td>{task.name}</td>
-                  <td>
-                    <button
-                      onClick={(e) => {
-                        isEditTaskData
-                          ? setEditTaskData(false)
-                          : editTaskData(task);
-                      }}
-                    >
-                      {task.id === addFieldData.id && isEditTaskData
-                        ? "Stop Edit"
-                        : "Edit"}
-                    </button>
-                  </td>
-                  <td>
-                    <button onClick={(e) => DeleteTask(task)}>Delete</button>
-                  </td>
-                </tr>
-              )
-          )}
-        </tbody>
-      </table>
-
+      {Tasks && Tasks.length > 0 && !Tasks.some((task) => task.taskDone) ? (
+        <table>
+          <thead>
+            <tr>
+              <th>Mark Done</th>
+              <th>Name</th>
+              <th>Date</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {Tasks.map((task) => (
+              <tr key={task.id}>
+                <td>
+                  <input
+                    type="checkbox"
+                    onChange={(e) => checkTaskDone(e, task)}
+                    checked={task.taskDone ? true : false}
+                  />
+                </td>
+                <td>{task.date}</td>
+                <td>{task.name}</td>
+                <td>
+                  <button
+                    onClick={(e) => {
+                      isEditTaskData
+                        ? setEditTaskData(false)
+                        : editTaskData(task);
+                    }}
+                  >
+                    {task.id === addFieldData.id && isEditTaskData
+                      ? "Stop Edit"
+                      : "Edit"}
+                  </button>
+                </td>
+                <td>
+                  <button onClick={(e) => DeleteTask(task)}>Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <h1>No Tasks</h1>
+      )}
       <h1>Tasks done</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Mark Done</th>
-            <th>Name</th>
-            <th>Date</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {Tasks.map(
-            (task) =>
-              task.taskDone && (
-                <tr key={task.id}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      onChange={(e) => checkTaskDone(e, task)}
-                      checked={task.taskDone ? true : false}
-                    />
-                  </td>
-                  <td>{task.date}</td>
-                  <td>{task.name}</td>
-                  <td>
-                    <button
-                      onClick={(e) => {
-                        isEditTaskData
-                          ? setEditTaskData(false)
-                          : editTaskData(task);
-                      }}
-                    >
-                      {task.id === addFieldData.id && isEditTaskData
-                        ? "Stop Edit"
-                        : "Edit"}
-                    </button>
-                  </td>
-                  <td>
-                    <button onClick={(e) => DeleteTask(task)}>Delete</button>
-                  </td>
-                </tr>
-              )
-          )}
-        </tbody>
-      </table>
+      {Tasks && Tasks.length > 0 && Tasks.some((task) => task.taskDone) ? (
+        <table>
+          <thead>
+            <tr>
+              <th>Mark Done</th>
+              <th>Name</th>
+              <th>Date</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {Tasks.map((task) => (
+              <tr key={task.id}>
+                <td>
+                  <input
+                    type="checkbox"
+                    onChange={(e) => checkTaskDone(e, task)}
+                    checked={task.taskDone}
+                  />
+                </td>
+                <td>{task.date}</td>
+                <td>{task.name}</td>
+                <td>
+                  <button
+                    onClick={(e) => {
+                      isEditTaskData
+                        ? setEditTaskData(false)
+                        : editTaskData(task);
+                    }}
+                  >
+                    {task.id === addFieldData.id && isEditTaskData
+                      ? "Stop Edit"
+                      : "Edit"}
+                  </button>
+                </td>
+                <td>
+                  <button onClick={(e) => DeleteTask(task)}>Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <h1>No Tasks</h1>
+      )}
     </div>
   );
 }
