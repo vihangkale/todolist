@@ -16,15 +16,36 @@ function App() {
   }
 
   async function addTask(e) {
-    const tasks = JSON.parse(localStorage.getItem("Tasks")) || [];
-    addFieldData.id = uuidv4();
-    addFieldData.taskDone = false;
-    setTasks([...tasks, addFieldData]);
-    localStorage.setItem("Tasks", JSON.stringify([...tasks, addFieldData]));
+    if (!addFieldData.name || !addFieldData.date) {
+      console.log(addFieldData.name, addFieldData.date);
+      if (!addFieldData.name) {
+        let name = document.getElementById("name");
+        name.style.border = "1px solid red";
+      }
+      if (!addFieldData.date) {
+        let date = document.getElementById("date");
+        date.style.border = "1px solid red";
+      }
+    } else {
+      const tasks = JSON.parse(localStorage.getItem("Tasks")) || [];
+      addFieldData.id = uuidv4();
+      addFieldData.taskDone = false;
+      setTasks([...tasks, addFieldData]);
+      localStorage.setItem("Tasks", JSON.stringify([...tasks, addFieldData]));
+      setAddFieldData({ name: "", date: "" });
+    }
   }
 
   function inputData(e) {
     e.preventDefault();
+    if (e.target.name === "name") {
+      let name = document.getElementById("name");
+      if (name) name.style.border = "none";
+    }
+    if (e.target.name === "date") {
+      let date = document.getElementById("date");
+      if (date) date.style.border = "none";
+    }
     setAddFieldData({ ...addFieldData, [e.target.name]: e.target.value });
   }
   function editTaskData(task) {
@@ -56,6 +77,8 @@ function App() {
 
   function clearTaskData() {
     localStorage.clear();
+    setEditTaskData(false);
+    setAddFieldData({ name: "", date: "" });
     getTaskData();
   }
 
@@ -76,6 +99,7 @@ function App() {
         <label>Name</label>
         <input
           name="name"
+          id="name"
           type="text"
           value={addFieldData.name}
           onChange={(e) => inputData(e)}
@@ -84,6 +108,7 @@ function App() {
         <input
           name="date"
           type="date"
+          id="date"
           value={addFieldData.date}
           onChange={(e) => inputData(e)}
         />
