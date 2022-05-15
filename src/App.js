@@ -90,6 +90,11 @@ function App() {
     localStorage.setItem("Tasks", JSON.stringify(tasks));
     getTaskData();
   }
+
+  function toggleEdit(task) {
+    if (isEditTaskData) editTaskData(task);
+    setEditTaskData(!isEditTaskData);
+  }
   return (
     <div className="table">
       <h1>{isEditTaskData ? "Update Task" : "Add Task"}</h1>
@@ -127,7 +132,7 @@ function App() {
           Clear All Tasks
         </button>
       </div>
-      {Tasks && Tasks.length > 0 && !Tasks.some((task) => task.taskDone) ? (
+      {Tasks && Tasks.length > 0 && Tasks.some((task) => !task.taskDone) ? (
         <table>
           <thead>
             <tr>
@@ -139,13 +144,13 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {Tasks.map((task) => (
+            {Tasks.filter((task) => !task.taskDone).map((task) => (
               <tr key={task.id}>
                 <td>
                   <input
                     type="checkbox"
                     onChange={(e) => checkTaskDone(e, task)}
-                    checked={task.taskDone ? true : false}
+                    checked={task.taskDone}
                   />
                 </td>
                 <td>{task.date}</td>
@@ -153,9 +158,7 @@ function App() {
                 <td>
                   <button
                     onClick={(e) => {
-                      isEditTaskData
-                        ? setEditTaskData(false)
-                        : editTaskData(task);
+                      toggleEdit(task);
                     }}
                   >
                     {task.id === addFieldData.id && isEditTaskData
@@ -186,7 +189,7 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {Tasks.map((task) => (
+            {Tasks.filter((task) => task.taskDone).map((task) => (
               <tr key={task.id}>
                 <td>
                   <input
